@@ -14,6 +14,7 @@ namespace Peek.Recording {
     public int width;
     public int height;
     public Gtk.Widget? widget;
+    public static Gdk.Monitor? primary_monitor;
 
     public static RecordingArea create_for_widget (Gtk.Widget recording_view) {
       var recording_view_window = recording_view.get_window ();
@@ -59,7 +60,14 @@ namespace Peek.Recording {
         area.left, area.top, area.width, area.height);
 
       // Scale recording area on HiDPI screens
-      var scale_factor = recording_view_window.get_scale_factor ();
+      var scale_factor =0;
+      primary_monitor = screen.get_display().get_primary_monitor ();
+      if (primary_monitor.is_primary()) {
+        scale_factor = primary_monitor.get_scale_factor ();
+      }
+      else {
+          scale_factor = recording_view_window.get_scale_factor ();
+      }
 
       area.left *= scale_factor;
       area.top *= scale_factor;
